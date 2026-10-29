@@ -1,0 +1,8 @@
+# Queue of articles. The pipeline drafts any topic whose article does not exist yet.
+# focus = keywords used to pick the relevant parts of each source text.
+topics:
+  - slug: small-claims-court
+    title: "Taking a small money dispute to the Small Claims Court"
+    category: Business
+    sources: [small-claims-act]
+    focus: [claim, limit, jurisdiction, advocate, procedure, filing]

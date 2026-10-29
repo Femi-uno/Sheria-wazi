@@ -1,0 +1,11 @@
+# Official texts the pipeline may cite. Paste the Kenya Law page (or PDF) URL for each.
+# Check Kenya Law's reuse terms before publishing long extracts. Articles quote only short passages.
+sources:
+  - {id: constitution,        title: "Constitution of Kenya, 2010",                                   url: ""}
+  - {id: employment-act,      title: "Employment Act, 2007",                                          url: ""}
+  - {id: data-protection-act, title: "Data Protection Act, 2019",                                     url: ""}
+  - {id: companies-act,       title: "Companies Act, 2015",                                           url: ""}
+  - {id: business-names-act,  title: "Registration of Business Names Act (Cap. 499)",                 url: ""}
+  - {id: rent-restriction-act,title: "Rent Restriction Act (Cap. 296)",                               url: ""}
+  - {id: landlord-tenant-act, title: "Landlord and Tenant (Shops, Hotels and Catering Establishments) Act (Cap. 301)", url: ""}
+  - {id: small-claims-act,    title: "Small Claims Court Act, 2016",                                  url: ""}
