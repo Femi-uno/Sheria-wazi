@@ -1,0 +1,59 @@
+name: pipeline
+on:
+  schedule:
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["content/**", "pipeline/**", "topics.yml", "sources.yml"]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pipeline
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      SITE_BASE: ${{ vars.SITE_BASE }}
+      PUBLISH_UNVERIFIED: ${{ vars.PUBLISH_UNVERIFIED || 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Ingest official sources
+        run: python -m pipeline.ingest
+        continue-on-error: true
+      - name: Draft new articles
+        run: python -m pipeline.draft
+        continue-on-error: true
+      - name: Verify citations
+        run: python -m pipeline.verify
+      - name: Build site
+        run: python -m pipeline.build_site
+      - name: Report
+        run: python -m pipeline.report | tee reports/latest.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit changes
+        run: |
+          git config user.name "sheria-wazi-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add content sources held reports
+          git diff --cached --quiet || (git commit -m "Pipeline run $(date -u +%F)" && git push)
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deploy
+        uses: actions/deploy-pages@v4
